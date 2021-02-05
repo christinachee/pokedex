@@ -28,7 +28,7 @@ class PokemonListFragment: Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = PokemonListFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -40,11 +40,11 @@ class PokemonListFragment: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.clear_btn -> {
-                Toast.makeText(context, "Clear btn", Toast.LENGTH_SHORT).show()
+                viewModel.clearPokemonList()
                 true
             }
             R.id.load_btn -> {
-                Toast.makeText(context, "load btn", Toast.LENGTH_SHORT).show()
+                viewModel.getPokemonList()
                 true
             }
             else -> return super.onOptionsItemSelected(item)
