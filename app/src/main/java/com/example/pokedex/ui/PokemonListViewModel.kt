@@ -1,5 +1,7 @@
 package com.example.pokedex.ui
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.pokedex.data.PokemonRepository
 import com.example.pokedex.data.asPokemon
@@ -20,19 +22,27 @@ class PokemonListViewModel @Inject constructor(
 
     val pokemonList = repository.getAllPokemons()
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean>
+        get() = _isLoading
+
     fun getPokemonList() {
         viewModelScope.launch(Dispatchers.IO) {
+            _isLoading.postValue(true)
             val pokemonListResult = pokeApi.getPokemonList(0, 151)
             val pokemons = pokemonListResult.results
-
+            delay(3000L)
             repository.insertAll(pokemons.asPokemon())
-
+            _isLoading.postValue(false)
         }
     }
 
     fun clearPokemonList() {
         viewModelScope.launch(Dispatchers.IO) {
+            _isLoading.postValue(true)
             repository.clear()
+            delay(5000L)
+            _isLoading.postValue(false)
         }
     }
 

@@ -11,6 +11,7 @@ import com.example.pokedex.PokemonListAdapter
 import com.example.pokedex.R
 import com.example.pokedex.databinding.PokemonListFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class PokemonListFragment: Fragment() {
@@ -65,8 +66,28 @@ class PokemonListFragment: Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.pokemonList.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
+        viewModel.pokemonList.observe(viewLifecycleOwner, {
+            when(it.size) {
+                0 -> {
+                    binding.emptyStatus.visibility = View.VISIBLE
+                    adapter.submitList(it)
+                }
+                else -> {
+                    binding.emptyStatus.visibility = View.GONE
+                    adapter.submitList(it)
+                }
+            }
+        })
+
+        viewModel.isLoading.observe(viewLifecycleOwner, {
+            when (it) {
+                true -> {
+                    binding.loadingAnimation.visibility = View.VISIBLE
+                }
+                false -> {
+                    binding.loadingAnimation.visibility = View.GONE
+                }
+            }
         })
     }
 
